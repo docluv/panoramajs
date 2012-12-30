@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Panorama JavaScript Module</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <link rel="stylesheet" href="css/site.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="css/panorama.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="css/real-test.css" type="text/css" media="screen" />
+    </head>
+    <body>
+        <ul class="home-navigation block-item-list">
+            <li class="nav-item block-item-large basic-test">Basic Click Test</li>
+            <li class="nav-item block-item-large touchswipe-ex">TouchSwipe Example</li>
+            <li class="nav-item block-item-large qunit-tests">Qunit Tests</li>
+            <li class="nav-item block-item-large big-header-tile">Big Header</li>
+        </ul>
+
+        <script>
+            
+            document.querySelector(".basic-test").addEventListener("click", function (e) {
+                e.preventDefault();
+                window.location.href = "panorama.html";
+            
+            });            
+            document.querySelector(".touchswipe-ex").addEventListener("click", function (e) {
+                e.preventDefault();
+                window.location.href = "touchswipe.html";
+            
+            });
+            
+            document.querySelector(".qunit-tests").addEventListener("click", function (e) {
+                e.preventDefault();
+                window.location.href = "panoramaunit.html";
+            
+            });
+
+            document.querySelector(".big-header-tile").addEventListener("click", function (e) {
+                e.preventDefault();
+                window.location.href = "bigheader.html";
+            
+            });
+
+        </script>
+    </body>
+</html>

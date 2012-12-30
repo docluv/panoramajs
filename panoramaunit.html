@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Panorama Unit Tests</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+        <link rel="stylesheet" href="js/specs/qunit.css" type="text/css" media="screen" />
+        <script src="js/specs/qunit.js" type="text/javascript"></script>
+        <script src="js/specs/sinon.js" type="text/javascript"></script>
+
+        <script type="text/javascript">
+
+            
+            testModeNoCache = true;
+            
+            var stubs = {};
+            
+            /**little mock framework**/
+            function stubfn(returnValue) {
+                var fn = function () {
+                    fn.called = true;
+                    fn.args = arguments;
+                    return returnValue;
+                }
+                fn.called = false;
+                fn.reset = function () {
+                    fn.called = false;
+                    delete fn.args;
+                }
+                return fn;
+            }
+            /** wink wink **/
+            
+        </script>
+    </head>
+    <body>
+
+        <h1 id="qunit-header">QUnit tests</h1>
+        <h2 id="qunit-banner"></h2>
+        <div id="qunit-testrunner-toolbar"></div>
+        <h2 id="qunit-userAgent"></h2>
+        <ol id="qunit-tests"></ol>
+        <div id="qunit-fixture">
+            <div class="panorama-container">
+                <ul class="panorama-panels">
+                    <li class="red-panel single-panel"></li>
+                    <li class="blue-panel single-panel"></li>
+                    <li class="green-panel single-panel"></li>
+                    <li class="purple-panel single-panel"></li>
+                </ul>
+            </div>
+
+            <div class="panorama-container-test">
+                <ul class="panorama-panels-test">
+                    <li class="red-panel single-panel"></li>
+                    <li class="blue-panel single-panel"></li>
+                    <li class="green-panel single-panel"></li>
+                </ul>
+            </div>
+        </div>
+
+        <script src="js/libs/jquery-1.8.3.min.js"></script>
+        <script src="js/debug/panorama.js" type="text/javascript"></script>
+        <script src="js/specs/panorama-unit-tests.js" type="text/javascript"></script>
+
+        <script type="text/javascript">
+            $(document)
+                    .ready(function(){
+                            $('#qunit-tests').addClass('hidepass');
+                    })
+                    .delegate("#qunit-testrunner-toolbar", "DOMNodeInserted", function(e){
+                            $("#qunit-filter-pass").attr("checked", true)   
+                    })
+                    .delegate("#qunit-filter-pass", "click", function(e){
+                            e.stopPropagation();
+                            var newValue = $(this).is(":checked");
+                            $('#qunit-tests').toggleClass('hidepass', newValue);
+                    });
+        </script>
+
+    </body>
+</html>
