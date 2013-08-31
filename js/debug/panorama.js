@@ -9,7 +9,7 @@
 //For the panel movement I Borrowed form jQUery Transit
 //https://github.com/rstacruz/jquery.transit
 
-(function (window, undefined) {
+(function (window, $, undefined) {
 
     "use strict";
 
@@ -24,55 +24,24 @@
 
         init: function (container, customSettings) {
 
-            this.settings = this.extend({}, this.settings, customSettings);
+            this.settings = $.extend({}, this.settings, customSettings);
             this.setupElements(container);
             this.setPanoramaDimensions();
             this.buildTransitionValue();
             this.buildVendorNames();
             this.support.transitionEnd =
-                                this.eventNames[this.support.transition] || null;
+								this.eventNames[this.support.transition] || null;
 
             this.bindEvents();
+
+            this.moveRightCallback();
 
             this.currentPanel = 2;
 
             return this;
         },
 
-        version: "0.0.1",
-
-        //simple version of the jQuery function
-        extend: function () {
-
-            var target = arguments[0] || {},
-		        i = 1,
-                src,
-                copy,
-                options,
-		        length = arguments.length;
-
-            for (; i < length; i++) {
-                // Only deal with non-null/undefined values
-                if ((options = arguments[i]) !== null) {
-                    // Extend the base object
-                    for (name in options) {
-                        src = target[name];
-                        copy = options[name];
-
-                        // Prevent never-ending loop
-                        if (target === copy) {
-                            continue;
-                        }
-
-                        if (copy !== undefined) {
-                            target[name] = copy;
-                        }
-                    }
-                }
-            }
-
-            return target;
-        },
+        version: "0.0.2",
 
         div: undefined,
         currentPanel: 1,
@@ -94,32 +63,29 @@
         buildTransitionValue: function () {
 
             this.transitionValue = "all " +
-                this.settings.speed + "ms " +
-                this.settings.easing;
+				this.settings.speed + "ms " +
+				this.settings.easing;
 
             this.headerTransitionValue = "all " +
-                (this.settings.speed - 100) + "ms " +
-                this.settings.easing;
+				(this.settings.speed - 100) + "ms " +
+				this.settings.easing;
 
             return this; //why not make it chainable LOL
         },
 
         buildVendorNames: function () {
 
-            var that = this,
-                settings = that.settings;
-
-            that.div = document.createElement('div');
+            this.div = document.createElement('div');
 
             // Check for the browser's transitions support.
-            that.support.transition = that.getVendorPropertyName('transition');
-            that.support.transitionDelay = that.getVendorPropertyName('transitionDelay');
-            that.support.transform = that.getVendorPropertyName('transform');
-            that.support.transformOrigin = that.getVendorPropertyName('transformOrigin');
-            that.support.transform3d = that.checkTransform3dSupport();
+            this.support.transition = $.getVendorPropertyName('transition');
+            this.support.transitionDelay = $.getVendorPropertyName('transitionDelay');
+            this.support.transform = $.getVendorPropertyName('transform');
+            this.support.transformOrigin = $.getVendorPropertyName('transformOrigin');
+            this.support.transform3d = $.checkTransform3dSupport();
 
             // Avoid memory leak in IE.
-            that.div = null;
+            this.div = null;
 
         },
 
@@ -128,104 +94,104 @@
             //should not need to set each panel as the content will determin their height.
             //if they need to be scrolled we will leave that to the developer to handle.
 
-            var that = this, i,
-                pw = that.settings.panelWidth - that.settings.peekWidth,
-                headerHeight = that.settings.headerHeight,
-                headerWidth = that.settings.panelWidth * 3,
-                settings = that.settings;
+            var pw = this.settings.panelWidth - this.settings.peekWidth,
+				headerHeight = this.settings.headerHeight,
+				headerWidth = this.settings.panelWidth * 3,
+                i = 0;
 
-            that.container.style.height = settings.panelHeight + "px";
-            that.panelbody.style.height = (settings.panelHeight - headerHeight) + "px";
-            that.panelbody.style.top = headerHeight + "px";
-            that.panelbody.style.width = (that.totalPanels * pw) + "px";
-            that.panelbody.style.left = -pw + "px";
+            this.container.style.height = this.settings.panelHeight + "px";
+            this.panelbody.style.height = (this.settings.panelHeight - headerHeight) + "px";
+            this.panelbody.style.top = headerHeight + "px";
+            this.panelbody.style.width = (this.totalPanels * pw) + "px";
+            this.panelbody.style.left = -pw + "px";
 
-            for (i = 0; i < that.panels.length; i++) {
-                that.panels[i].style.width = pw + "px";
-                that.panels[i].style.minHeight = that.panelbody.style.height;
+            for (i = 0; i < this.panels.length; i++) {
+                this.panels[i].style.width = pw + "px";
+                this.panels[i].style.minHeight = this.panelbody.style.height;
             }
 
-            if (that.headerPanels.length > 1) {
+            if (this.headerPanels.length > 1) {
 
                 headerWidth = 0;
 
-                for (i = 0; i < that.headerPanels.length; i++) {
-                    headerWidth += that.headerPanels[i].offsetWidth;
+                for (var i = 0; i < this.headerPanels.length; i++) {
+                    headerWidth += this.headerPanels[i].offsetWidth;
                 }
 
                 headerWidth = headerWidth * 1.35; //add some width to make sure we cover the width we need
 
             }
 
-            if (that.header) {
+            if (this.header) {
 
-                if (that.headerPanels && that.headerPanels.length > 0) {
-                    that.header.style.width = headerWidth + "px"
-                    that.header.style.left = -parseInt(that.headerPanels[0].offsetWidth, 10) + "px";
+                if (this.headerPanels && this.headerPanels.length > 0) {
+                    this.header.style.width = headerWidth + "px";
+                    this.header.style.left = -parseInt(this.headerPanels[0].offsetWidth, 10) + "px";
                 } else {
-                    that.header.style.width = headerWidth + "px";
-                    that.header.style.paddingLeft =
-                    that.header.style.paddingRight = settings.panelWidth + "px";
-                    that.header.style.left = settings.bigHeaderLeft = -settings.panelWidth + "px";
+                    this.header.style.width = headerWidth + "px";
+                    this.header.style.paddingLeft =
+					this.header.style.paddingRight = this.settings.panelWidth + "px";
+                    this.header.style.left =
+						this.settings.bigHeaderLeft = -this.settings.panelWidth + "px";
                 }
             }
 
         },
 
-        getVendorPropertyName: function (prop) {
-            var prefixes = ['Moz', 'Webkit', 'O', 'ms'],
-                vendorProp, i,
-                prop_ = prop.charAt(0).toUpperCase() + prop.substr(1);
+        clearPanoramaSettings: function () {
 
-            if (prop in this.div.style) {
-                return prop;
+            var i = 0,
+                panelbody = this.panelbody;
+
+            panelbody.style.height =
+            panelbody.style.top =
+            panelbody.style.width =
+            panelbody.style.left =
+                this.container.style.height = "";
+
+            for (i = 0; i < this.panels.length; i++) {
+                this.panels[i].style.minHeight = this.panels[i].style.width = "";
             }
 
-            for (i = 0; i < prefixes.length; ++i) {
+            if (this.header) {
 
-                vendorProp = prefixes[i] + prop_;
-
-                if (vendorProp in this.div.style) {
-                    return vendorProp;
+                if (this.headerPanels && this.headerPanels.length > 0) {
+                    this.header.style.width =
+					    this.header.style.left = "";
+                } else {
+                    this.header.style.width =
+					    this.header.style.paddingLeft =
+					    this.header.style.paddingRight =
+					    this.header.style.left =
+						this.settings.bigHeaderLeft = "";
                 }
-
             }
+
         },
 
-        // Helper function to check if transform3D is supported.
-        // Should return true for Webkits and Firefox 10+.
-        checkTransform3dSupport: function () {
-            this.div.style[this.support.transform] = '';
-            this.div.style[this.support.transform] = 'rotateY(90deg)';
-            return this.div.style[this.support.transform] !== '';
-        },
 
         setupElements: function (container) {
-
-            var that = this,
-                settings = that.settings;
-
             //The wrapping element
             if (!container) {
-                that.container = document.querySelector(settings.container);
+                this.container = document.querySelector(this.settings.container);
             } else {
-                that.container = container;
+                this.container = container;
             }
             //The main element
-            that.panelbody = document.querySelector(
-                                    settings.container + "  " +
-                                    settings.panoramaSelector);
+            this.panelbody = document.querySelector(
+									this.settings.container + "  " +
+									this.settings.panoramaSelector);
             //the panels
-            that.panels = document.querySelectorAll(
-                                    settings.container + "  " +
-                                    settings.panoramaSelector + "  " +
-                                    settings.singleColumnSelector);
+            this.panels = document.querySelectorAll(
+									this.settings.container + "  " +
+									this.settings.panoramaSelector + "  " +
+									this.settings.singleColumnSelector);
 
-            that.totalPanels = that.panels.length;
+            this.totalPanels = this.panels.length;
 
-            that.header = document.querySelector(settings.headerStyle);
+            this.header = document.querySelector(this.settings.headerStyle);
 
-            that.headerPanels = document.querySelectorAll(settings.headerPanelStyle);
+            this.headerPanels = document.querySelectorAll(this.settings.headerPanelStyle);
 
         },
 
@@ -262,7 +228,18 @@
             this.settings.panelWidth = window.innerWidth;
             this.settings.panelHeight = window.innerHeight;
 
-            this.setPanoramaDimensions();
+            if (this.settings.maxWidth <= window.innerWidth ||
+                this.settings.maxHeight <= window.innerHeight) {
+
+                this.settings.canMove = false;
+                this.clearPanoramaSettings();
+
+            } else {
+
+                this.settings.canMove = true;
+                this.setPanoramaDimensions();
+            }
+
         },
 
         tEndCB: undefined,
@@ -284,8 +261,8 @@
                 this.panelbody.style[this.support.transition] = this.transitionValue;
 
                 this.panelbody.style[this.support.transform] = this.support.transform3d ?
-                                                'translate3D(' + move.value + 'px, 0, 0)' :
-                                                'translateX(' + move.value + 'px)';
+												'translate3D(' + move.value + 'px, 0, 0)' :
+												'translateX(' + move.value + 'px)';
 
             } else {
                 this.moving = false;
@@ -318,7 +295,7 @@
         moveHeader: function (moveLeft) {
 
             var that = this,
-                activeWidth = 0;
+				activeWidth = 0;
 
             if (moveLeft === undefined) {
                 moveLeft = true; //assume moving to the left
@@ -338,8 +315,8 @@
                     that.header.style[that.support.transition] = that.headerTransitionValue;
 
                     that.header.style[that.support.transform] = that.support.transform3d ?
-                                                'translate3D(' + activeWidth + 'px, 0, 0)' :
-                                                'translateX(' + activeWidth + 'px)';
+												'translate3D(' + activeWidth + 'px, 0, 0)' :
+												'translateX(' + activeWidth + 'px)';
 
                 } else {//just move a % to the left or right
 
@@ -349,11 +326,11 @@
 
                         if (moveLeft) {
                             this.bigHeaderTrans -=
-                                    (that.settings.panelWidth * that.settings.headerSlide);
+									(that.settings.panelWidth * that.settings.headerSlide);
 
                         } else {
                             this.bigHeaderTrans +=
-                                    (that.settings.panelWidth * that.settings.headerSlide);
+									(that.settings.panelWidth * that.settings.headerSlide);
 
                         }
 
@@ -364,24 +341,24 @@
                     bigHeader.style[that.support.transition] = that.headerTransitionValue;
 
                     bigHeader.style[that.support.transform] = that.support.transform3d ?
-                                                'translate3D(' + this.bigHeaderTrans + 'px, 0, 0)' :
-                                                'translateX(' + this.bigHeaderTrans + 'px)';
+												'translate3D(' + this.bigHeaderTrans + 'px, 0, 0)' :
+												'translateX(' + this.bigHeaderTrans + 'px)';
 
                 }
 
 
                 if (!moveLeft) {
                     that.tHeaderEndCB = (that.headerPanels.length > 1) ?
-                                            that.endHeaderRight :
-                                            function () {
-                                                that.endBigHeaderRight(activeWidth);
-                                            };
+											that.endHeaderRight :
+											function () {
+											    that.endBigHeaderRight(activeWidth);
+											};
                 } else {
                     that.tHeaderEndCB = (that.headerPanels.length > 1) ?
-                                            that.endHeaderLeft :
-                                            function () {
-                                                that.endBigHeaderLeft(activeWidth);
-                                            };
+											that.endHeaderLeft :
+											function () {
+											    that.endBigHeaderLeft(activeWidth);
+											};
                 }
 
             }
@@ -468,8 +445,12 @@
 
         moveLeft: function (e, x) {
 
+            if (!this.settings.canMove) {
+                return;
+            }
+
             var target = e.target,
-                i = 0;
+				i = 0;
 
             x = x || this.settings.panelWidth - this.settings.peekWidth;
 
@@ -494,8 +475,12 @@
 
         moveRight: function (e, x) {
 
+            if (!this.settings.canMove) {
+                return;
+            }
+
             var target = e.target,
-                i = 0;
+				i = 0;
 
             x = x || this.settings.panelWidth - this.settings.peekWidth;
 
@@ -521,7 +506,7 @@
         moveLastPanel: function () {
 
             var parentNode = this.panelbody,
-                    childNodes = parentNode.childNodes;
+					childNodes = parentNode.childNodes;
 
             parentNode.style[this.support.transition] = this.fastTransition;
             parentNode.appendChild(this.getFirstPanel(childNodes));
@@ -608,6 +593,10 @@
             panelWidth: window.innerWidth,
             panelHeight: window.innerHeight,
 
+            maxWidth: Math.ceil(),
+            maxHeight: Math.ceil(),
+            canMove: true,
+
             peekWidth: 35,
 
             easing: "ease-in-out",
@@ -635,5 +624,5 @@
 
     return (window.panorama = panorama);
 
-} (window));
+} (window, $));
 

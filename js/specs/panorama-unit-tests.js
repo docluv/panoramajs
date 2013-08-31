@@ -18,17 +18,15 @@ test("Verify We Have a Panorama Object & members", function () {
     ok(p, "p object should exist");
     ok(p.init, "p.init should exist");
     ok(p.version, "p.version should exist");
-    ok(p.extend, "p.extend should exist");
+
     equal(p.div, undefined, "p.div should exist");
     ok(p.support, "p.support should exist");
     ok(p.eventNames, "p.eventNames should exist");
     ok(p.transitionValue, "p.transitionValue should exist");
     ok(p.fastTransition, "p.fastTransition should exist");
     ok(p.buildTransitionValue, "p.buildTransitionValue should exist");
-    ok(p.buildVendorNames, "p.buildVendorNames should exist");
+  
     ok(p.setPanoramaDimensions, "p.setPanoramaDimensions should exist");
-    ok(p.getVendorPropertyName, "p.getVendorPropertyName should exist");
-    ok(p.checkTransform3dSupport, "p.checkTransform3dSupport should exist");
     ok(p.setupElements, "p.setupElements should exist");
     ok(p.bindEvents, "p.bindEvents should exist");
     equal(p.tEndCB, undefined, "p.tEndCB should exist");
@@ -51,7 +49,7 @@ test("Verify constructor executes expected members", function () {
         setupElements = sinon.stub(p, "setupElements"),
         setPanoramaDimensions = sinon.stub(p, "setPanoramaDimensions"),
         buildTransitionValue = sinon.stub(p, "buildTransitionValue"),
-        buildVendorNames = sinon.stub(p, "buildVendorNames"),
+   //     buildVendorNames = sinon.stub(p, "buildVendorNames"),
         bindEvents = sinon.stub(p, "bindEvents");
 
     p.init(target);
@@ -60,26 +58,12 @@ test("Verify constructor executes expected members", function () {
     ok(setupElements.calledWith(target), "setupElements should be called passing the target element");
     ok(setPanoramaDimensions.calledOnce, "setPanoramaDimensions should be called");
     ok(buildTransitionValue.calledOnce, "buildTransitionValue should be called");
-    ok(buildVendorNames.calledOnce, "buildVendorNames should be called");
+ //   ok(buildVendorNames.calledOnce, "buildVendorNames should be called");
     ok(bindEvents.calledOnce, "bindEvents should be called");
 
     setupElements.reset();
 });
 
-test("Verify extend actually extends object properties", function () {
-
-    var initObj = {},
-        passedObj = {
-            "item1": 100,
-            "item2": "Hello",
-            "item3": "World"
-        },
-
-    newObj = p.extend(initObj, passedObj);
-
-    deepEqual(newObj, passedObj, "should now be the same element");
-
-});
 
 test("Verify buildTransitionValue sets the transition string", function () {
 
@@ -92,7 +76,7 @@ test("Verify buildTransitionValue sets the transition string", function () {
     equal(p.transitionValue, expected, "should be as expected");
 
 });
-
+/*
 test("Verify buildVendorNames calls dependant functions", function () {
 
     var getVendorPropertyName = sinon.stub(p, "getVendorPropertyName"),
@@ -114,7 +98,7 @@ test("Verify buildVendorNames sets values", function () {
     ok(p.support.transformOrigin, "p.support.transformOrigin should be expected");
     ok(p.support.transform3d, "p.support.transform3d should be expected");
 });
-
+*/
 test("Verify setPanoramaDimensions sets values according to test values", function () {
 
     var h = p.settings.panelHeight = 100,
