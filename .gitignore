@@ -166,3 +166,4 @@ pip-log.txt
 # Remove .hg directory
 .hg/
 .hgignore
+/node_modules

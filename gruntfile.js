@@ -2,15 +2,16 @@ module.exports = function (grunt) {
 
     // Project configuration.
     grunt.initConfig({
-        lint: {
-            all: ['grunt.js', 'js/debug/*.js']
-        },
+
         jshint: {
             options: {
                 browser: true
             }
         },
-        min: {
+        uglify: {
+            options: {
+                compress: true
+            },
             dist: {
                 src: ['js/debug/panorama.js'],
                 dest: 'js/panorama.min.js'
@@ -18,8 +19,9 @@ module.exports = function (grunt) {
         }
     });
 
+    grunt.loadNpmTasks('grunt-contrib-uglify');
 
     // Default task.
-    grunt.registerTask('default', [/*"lint",*/'min']);
+    grunt.registerTask('default', ['uglify']);
 
 };
